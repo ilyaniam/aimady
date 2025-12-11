@@ -576,43 +576,44 @@
             }, 100);
         }
 
-        function showPoem() {
-            // Show poem section
-            poemSection.style.display = 'block';
-            setTimeout(() => {
-                poemSection.style.opacity = '1';
-                
-                // Generate poem
-                const poemLines = [
-                    "In the silence between our miles, your name folds light into my days,",
-                    "And every shadow learns the shape of your tenderness.",
-                    "",
-                    "I trace the constellations of your thoughts in morning's quiet,",
-                    "Find your reflection in the spaces between raindrops,",
-                    "Your voice, a gentle tide that calms my restless shores.",
-                    "",
-                    "This love is not measured in moments but in eternities,",
-                    "Not in words but in the quiet understanding",
-                    "That breathes between shared glances and unspoken promises.",
-                    "",
-                    "You are the steady rhythm in life's changing melody,",
-                    "The constant in my equations of chaos and grace,",
-                    "The sanctuary where my soul finds its true north.",
-                    "",
-                    "I carry you in the quiet corners of my being,",
-                    "Where love grows deep roots in fertile silence,",
-                    "Blossoming into something both timeless and new,",
-                    "A garden tended with devotion's gentle hands.",
-                    "",
-                    "Our connection writes itself in invisible ink,",
-                    "On the parchment of shared breaths and intertwined dreams,",
-                    "A story too profound for ordinary language,",
-                    "Yet understood completely in the grammar of the heart.",
-                    "",
-                    "In every sunrise, I find your warmth,",
-                    "In every dusk, your peaceful presence.",
-                    "You are the poem my heart writes without ceasing,",
-                    "The beautiful, endless verse of Afi's love for Ilyan."
+       function showPoem() {
+    // Show poem section
+    poemSection.style.display = 'block';
+    
+    // Force a reflow to ensure the display change is registered
+    poemSection.offsetHeight;
+    
+    setTimeout(() => {
+        poemSection.style.opacity = '1';
+        
+        // Generate poem
+        const poemLines = [
+            "In the silence between our miles, your name folds light into my days,",
+            "And every shadow learns the shape of your tenderness.",
+            "",
+            "I trace the constellations of your thoughts in morning's quiet,",
+            "Find your reflection in the spaces between raindrops,",
+            "Your voice, a gentle tide that calms my restless shores.",
+            "",
+            "This love is not measured in moments but in eternities,",
+            "Not in words but in the quiet understanding",
+            "That breathes between shared glances and unspoken promises.",
+            "",
+            "You are the steady rhythm in life's changing melody,",
+            "The constant in my equations of chaos and grace,",
+            "The sanctuary where my soul finds its true north.",
+            "",
+            "I carry you in the quiet corners of my being,",
+            "Where love grows deep roots in fertile silence,",
+            "Blossoming into something both timeless and new,",
+            "A garden tended with devotion's gentle hands.",
+            "",
+            "Our connection writes itself in invisible ink,",
+            "On the parchment of shared breaths and intertwined dreams,",
+            "A story too profound for ordinary language,",
+            "Yet understood completely in the grammar of the heart.",
+            "",
+            "In every sunrise, I find your warmth,",
                 ];
                 
                 // Display poem lines with staggered animation
