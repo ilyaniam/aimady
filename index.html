@@ -6,657 +6,780 @@
     <title>Afi's Love to Ilyan</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-
+        
         :root {
-            --black: #111111;
-            --white: #fefefe;
-            --gray-light: #f5f5f5;
-            --gray-medium: #d0d0d0;
-            --gray-dark: #555555;
-            --transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-            --radius: 12px;
-            --spacing-xs: 0.5rem;
-            --spacing-sm: 1rem;
-            --spacing-md: 2rem;
-            --spacing-lg: 4rem;
-            --spacing-xl: 6rem;
+            --mono-light: #f8f8f8;
+            --mono-mid: #888888;
+            --mono-dark: #222222;
+            --border-radius: 16px;
+            --transition-slow: 1.2s ease;
+            --transition-medium: 0.8s ease;
+            --transition-fast: 0.4s ease;
+            --shadow-subtle: 0 8px 30px rgba(0, 0, 0, 0.05);
+            --shadow-float: 0 15px 35px rgba(0, 0, 0, 0.08);
         }
-
+        
         body {
             font-family: 'Inter', sans-serif;
-            color: var(--black);
-            background-color: var(--white);
+            color: var(--mono-dark);
+            background-color: white;
             line-height: 1.6;
             overflow-x: hidden;
             min-height: 100vh;
-            padding: var(--spacing-md);
-            max-width: 1200px;
-            margin: 0 auto;
         }
-
-        .container {
-            opacity: 1;
-            transition: var(--transition);
-            min-height: 90vh;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .container.fade-out {
-            opacity: 0;
-            transform: translateY(20px);
-        }
-
-        .container.fade-in {
-            animation: fadeIn 1.2s ease-out forwards;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        header {
-            text-align: center;
-            margin-bottom: var(--spacing-xl);
-            padding-top: var(--spacing-lg);
-        }
-
-        h1 {
+        
+        h1, h2, h3 {
             font-family: 'Playfair Display', serif;
             font-weight: 500;
-            font-size: 3.5rem;
             letter-spacing: -0.02em;
-            margin-bottom: var(--spacing-sm);
-            line-height: 1.1;
         }
-
-        .subtitle {
-            font-family: 'Inter', sans-serif;
-            font-weight: 300;
-            font-size: 1.1rem;
-            color: var(--gray-dark);
-            letter-spacing: 0.05em;
-            text-transform: uppercase;
-            margin-bottom: var(--spacing-xl);
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
         }
-
-        .landing-content {
+        
+        /* Landing Page */
+        .landing-page {
+            height: 100vh;
+            background: linear-gradient(135deg, #f5f5f5 0%, #eaeaea 100%);
             display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 24px;
+            transition: opacity var(--transition-slow);
+        }
+        
+        .landing-content {
+            max-width: 700px;
+            opacity: 0;
+            animation: fadeInUp 1.2s ease 0.3s forwards;
+        }
+        
+        .main-title {
+            font-size: 4.5rem;
+            margin-bottom: 24px;
+            line-height: 1.1;
+            opacity: 0;
+            animation: fadeIn 1.2s ease 0.5s forwards;
+        }
+        
+        .subtitle {
+            font-size: 1.4rem;
+            color: var(--mono-mid);
+            margin-bottom: 64px;
+            font-weight: 300;
+            letter-spacing: 0.02em;
+            opacity: 0;
+            animation: fadeIn 1.2s ease 0.8s forwards;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 18px 42px;
+            background-color: var(--mono-dark);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            font-family: 'Inter', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 400;
+            letter-spacing: 0.04em;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            opacity: 0;
+            animation: fadeIn 1.2s ease 1.1s forwards;
+            text-decoration: none;
+        }
+        
+        .btn:hover {
+            background-color: #333333;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-subtle);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+        
+        /* Camera System */
+        .camera-section {
+            display: none;
+            min-height: 100vh;
+            padding: 60px 24px;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            min-height: 60vh;
+            opacity: 0;
+            transition: opacity var(--transition-medium);
+        }
+        
+        .camera-title {
+            font-size: 2.5rem;
+            margin-bottom: 48px;
             text-align: center;
-            padding: var(--spacing-lg) 0;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all var(--transition-medium);
         }
-
-        .button {
-            font-family: 'Inter', sans-serif;
-            font-weight: 400;
-            font-size: 1rem;
-            background-color: var(--black);
-            color: var(--white);
-            border: none;
-            padding: 1rem 2.5rem;
-            border-radius: var(--radius);
-            cursor: pointer;
-            transition: var(--transition);
-            letter-spacing: 0.05em;
-            text-transform: uppercase;
-            margin-top: var(--spacing-md);
-        }
-
-        .button:hover {
-            background-color: var(--gray-dark);
-            transform: translateY(-2px);
-        }
-
-        .button:active {
-            transform: translateY(0);
-        }
-
-        .camera-section {
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            width: 100%;
-            max-width: 800px;
-            margin: 0 auto;
-            padding-top: var(--spacing-lg);
-        }
-
+        
         .camera-container {
             width: 100%;
-            max-width: 600px;
-            height: 400px;
-            background-color: var(--gray-light);
-            border-radius: var(--radius);
+            max-width: 800px;
+            border-radius: var(--border-radius);
             overflow: hidden;
-            margin-bottom: var(--spacing-lg);
+            margin-bottom: 32px;
+            box-shadow: var(--shadow-subtle);
+            background-color: var(--mono-light);
+            min-height: 500px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
             position: relative;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
         }
-
+        
         #camera-preview {
             width: 100%;
             height: 100%;
             object-fit: cover;
             display: none;
+            border-radius: var(--border-radius);
         }
-
+        
         .camera-placeholder {
-            width: 100%;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            color: var(--gray-dark);
+            padding: 60px;
+            text-align: center;
+            color: var(--mono-mid);
         }
-
-        .camera-icon {
-            font-size: 3rem;
-            margin-bottom: var(--spacing-sm);
-            opacity: 0.7;
-        }
-
+        
         .camera-controls {
             display: flex;
-            gap: var(--spacing-sm);
-            margin-top: var(--spacing-md);
-        }
-
-        .capture-button {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            background-color: var(--white);
-            border: 2px solid var(--gray-medium);
-            display: flex;
-            align-items: center;
             justify-content: center;
-            cursor: pointer;
-            transition: var(--transition);
+            gap: 24px;
+            margin-top: 32px;
         }
-
-        .capture-button:hover {
-            border-color: var(--black);
-        }
-
-        .capture-inner {
-            width: 44px;
-            height: 44px;
+        
+        .capture-btn {
+            width: 70px;
+            height: 70px;
             border-radius: 50%;
-            background-color: var(--black);
+            background-color: var(--mono-dark);
+            border: 4px solid white;
+            box-shadow: 0 0 0 2px var(--mono-dark), var(--shadow-subtle);
+            cursor: pointer;
+            transition: all var(--transition-fast);
         }
-
-        .result-section {
+        
+        .capture-btn:hover {
+            transform: scale(1.05);
+            background-color: #333333;
+        }
+        
+        /* Photo Display */
+        .photo-display {
             display: none;
-            flex-direction: column;
-            align-items: center;
-            width: 100%;
-            max-width: 800px;
-            margin: 0 auto;
-            padding-top: var(--spacing-lg);
-        }
-
-        .photo-container {
-            width: 100%;
             max-width: 600px;
-            border-radius: var(--radius);
-            overflow: hidden;
-            margin-bottom: var(--spacing-xl);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            margin: 60px auto;
+            text-align: center;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all var(--transition-medium);
         }
-
+        
+        .photo-frame {
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--shadow-float);
+            margin-bottom: 48px;
+            position: relative;
+            background-color: var(--mono-light);
+            padding: 20px;
+        }
+        
         #captured-photo {
             width: 100%;
             height: auto;
-            display: block;
+            border-radius: calc(var(--border-radius) - 10px);
             filter: grayscale(100%) contrast(110%);
+            display: block;
         }
-
-        .poem-container {
-            width: 100%;
-            max-width: 600px;
-            padding: var(--spacing-lg);
-            margin-bottom: var(--spacing-xl);
+        
+        /* Love Meter */
+        .love-meter {
+            display: none;
+            max-width: 800px;
+            margin: 80px auto;
+            text-align: center;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all var(--transition-medium);
         }
-
-        .poem-title {
+        
+        .love-meter h2 {
+            font-size: 2.2rem;
+            margin-bottom: 24px;
+            color: var(--mono-dark);
+        }
+        
+        .love-percentage {
+            font-size: 5.5rem;
             font-family: 'Playfair Display', serif;
-            font-weight: 500;
-            font-size: 1.8rem;
-            margin-bottom: var(--spacing-md);
-            text-align: center;
+            font-weight: 600;
+            margin: 40px 0;
+            color: var(--mono-dark);
+            min-height: 120px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
         }
-
-        .poem {
-            font-family: 'Inter', sans-serif;
-            font-weight: 300;
-            font-size: 1.1rem;
+        
+        .infinite-love {
+            font-size: 4.5rem;
+            line-height: 1.2;
+        }
+        
+        /* Poem Section */
+        .poem-section {
+            display: none;
+            max-width: 700px;
+            margin: 80px auto;
+            padding: 60px 24px;
+            text-align: center;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all var(--transition-medium);
+        }
+        
+        .poem-title {
+            font-size: 2.2rem;
+            margin-bottom: 48px;
+            color: var(--mono-dark);
+        }
+        
+        .poem-content {
+            font-size: 1.3rem;
             line-height: 1.8;
-            color: var(--black);
-            text-align: center;
+            color: var(--mono-dark);
+            font-weight: 300;
+            letter-spacing: 0.01em;
             white-space: pre-line;
+            margin-bottom: 40px;
+            opacity: 0;
         }
-
+        
         .poem-line {
-            margin-bottom: var(--spacing-md);
+            margin-bottom: 24px;
             opacity: 0;
             transform: translateY(10px);
-            animation: lineAppear 0.8s ease forwards;
         }
-
-        @keyframes lineAppear {
+        
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 60px 24px 40px;
+            color: var(--mono-mid);
+            font-weight: 300;
+            letter-spacing: 0.03em;
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
+            margin-top: 40px;
+        }
+        
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
             to {
                 opacity: 1;
                 transform: translateY(0);
             }
         }
-
-        .footer-note {
-            font-family: 'Inter', sans-serif;
-            font-weight: 300;
-            font-size: 0.9rem;
-            color: var(--gray-dark);
-            text-align: center;
-            margin-top: var(--spacing-xl);
-            padding-bottom: var(--spacing-lg);
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
         }
-
-        .back-button {
-            margin-top: var(--spacing-md);
-            background-color: transparent;
-            color: var(--black);
-            border: 1px solid var(--gray-medium);
+        
+        .fade-in {
+            animation: fadeIn var(--transition-medium) forwards;
         }
-
-        .back-button:hover {
-            background-color: var(--gray-light);
+        
+        .slide-up {
+            animation: fadeInUp var(--transition-medium) forwards;
         }
-
+        
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.03);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+        
+        /* Responsive Design */
         @media (max-width: 768px) {
-            body {
-                padding: var(--spacing-sm);
-            }
-            
-            h1 {
-                font-size: 2.5rem;
-            }
-            
-            .camera-container, .photo-container {
-                height: 300px;
-            }
-            
-            .poem-container {
-                padding: var(--spacing-md);
-            }
-            
-            .poem {
-                font-size: 1rem;
-            }
-        }
-
-        @media (max-width: 480px) {
-            h1 {
-                font-size: 2rem;
+            .main-title {
+                font-size: 3rem;
             }
             
             .subtitle {
-                font-size: 0.9rem;
+                font-size: 1.1rem;
+                margin-bottom: 48px;
             }
             
-            .camera-container, .photo-container {
-                height: 250px;
+            .love-percentage {
+                font-size: 4rem;
+            }
+            
+            .infinite-love {
+                font-size: 3.5rem;
+            }
+            
+            .poem-content {
+                font-size: 1.1rem;
+            }
+            
+            .camera-container {
+                min-height: 400px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .main-title {
+                font-size: 2.5rem;
+            }
+            
+            .camera-title {
+                font-size: 2rem;
+            }
+            
+            .love-percentage {
+                font-size: 3rem;
+            }
+            
+            .poem-title {
+                font-size: 1.8rem;
+            }
+            
+            .btn {
+                padding: 16px 32px;
             }
         }
     </style>
 </head>
 <body>
-    <div class="container fade-in" id="main-container">
-        <header>
-            <h1>Afi's Love to Ilyan</h1>
-            <div class="subtitle">A Timeless Devotion</div>
-        </header>
-        
-        <section class="landing-content" id="landing-section">
-            <p style="margin-bottom: var(--spacing-md); color: var(--gray-dark); max-width: 500px;">
-                Capture a moment to reveal a poem born from sincere love,<br>
-                composed in quiet tones of devotion and longing.
-            </p>
-            <button class="button" id="open-camera-btn">Open Camera</button>
-        </section>
-        
-        <section class="camera-section" id="camera-section">
+    <!-- Landing Page -->
+    <section class="landing-page" id="landing-page">
+        <div class="landing-content">
+            <h1 class="main-title">Afi's Love to Ilyan</h1>
+            <p class="subtitle">A monochrome love letter captured through a single moment.</p>
+            <button class="btn" id="open-camera">Open Camera</button>
+        </div>
+    </section>
+    
+    <!-- Camera System -->
+    <section class="camera-section" id="camera-section">
+        <div class="container">
+            <h2 class="camera-title">Capture a Moment</h2>
             <div class="camera-container">
                 <video id="camera-preview" autoplay playsinline></video>
                 <div class="camera-placeholder" id="camera-placeholder">
-                    <div class="camera-icon">📷</div>
-                    <p>Camera ready to capture your moment</p>
+                    <p>Camera will activate when you grant permissions</p>
+                    <p style="margin-top: 16px; font-size: 0.9rem;">Your photo will be styled in monochrome elegance</p>
                 </div>
             </div>
             <div class="camera-controls">
-                <div class="capture-button" id="capture-btn">
-                    <div class="capture-inner"></div>
-                </div>
+                <button class="capture-btn" id="capture-btn"></button>
             </div>
-            <button class="button back-button" id="back-from-camera-btn">Return</button>
-        </section>
-        
-        <section class="result-section" id="result-section">
-            <div class="photo-container">
+        </div>
+    </section>
+    
+    <!-- Photo Display -->
+    <section class="photo-display" id="photo-display">
+        <div class="container">
+            <div class="photo-frame">
                 <img id="captured-photo" alt="Captured moment">
             </div>
-            
-            <div class="poem-container">
-                <h2 class="poem-title">For Ilyan, With All That Is Timeless</h2>
-                <div class="poem" id="poem">
-                    <!-- Poem will be generated here -->
-                </div>
+            <h3>A Moment Captured for Ilyan</h3>
+            <p style="color: var(--mono-mid); margin-top: 12px;">Frozen in monochrome, eternal in memory</p>
+        </div>
+    </section>
+    
+    <!-- Love Meter -->
+    <section class="love-meter" id="love-meter">
+        <div class="container">
+            <h2>Love Meter</h2>
+            <p style="color: var(--mono-mid); max-width: 500px; margin: 0 auto 40px;">
+                Measuring the immeasurable connection between two souls
+            </p>
+            <div class="love-percentage" id="love-percentage">
+                <!-- Love percentage will be inserted here -->
             </div>
-            
-            <button class="button back-button" id="back-from-result-btn">Capture Another Moment</button>
-            
-            <div class="footer-note">
-                This moment, like love, exists beyond time.<br>
-                For Ilyan, from Afi — with a quiet heart.
+            <p style="color: var(--mono-mid); font-style: italic; max-width: 500px; margin: 0 auto;">
+                "Love is not measurable in ordinary terms, yet we try"
+            </p>
+        </div>
+    </section>
+    
+    <!-- Poem Section -->
+    <section class="poem-section" id="poem-section">
+        <div class="container">
+            <h2 class="poem-title">For Ilyan</h2>
+            <div class="poem-content" id="poem-content">
+                <!-- Poem will be inserted here -->
             </div>
-        </section>
-    </div>
-
+            <p style="color: var(--mono-mid); font-weight: 400; letter-spacing: 0.05em;">
+                — With all of Afi's love
+            </p>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>Afi's Love to Ilyan • A Monochrome Love Letter • Eternal Devotion</p>
+        </div>
+    </footer>
+    
     <script>
         // DOM Elements
-        const landingSection = document.getElementById('landing-section');
+        const landingPage = document.getElementById('landing-page');
         const cameraSection = document.getElementById('camera-section');
-        const resultSection = document.getElementById('result-section');
-        const mainContainer = document.getElementById('main-container');
-        const openCameraBtn = document.getElementById('open-camera-btn');
-        const backFromCameraBtn = document.getElementById('back-from-camera-btn');
-        const backFromResultBtn = document.getElementById('back-from-result-btn');
+        const photoDisplay = document.getElementById('photo-display');
+        const loveMeter = document.getElementById('love-meter');
+        const poemSection = document.getElementById('poem-section');
+        
+        const openCameraBtn = document.getElementById('open-camera');
         const captureBtn = document.getElementById('capture-btn');
         const cameraPreview = document.getElementById('camera-preview');
         const cameraPlaceholder = document.getElementById('camera-placeholder');
         const capturedPhoto = document.getElementById('captured-photo');
-        const poemElement = document.getElementById('poem');
+        const lovePercentage = document.getElementById('love-percentage');
+        const poemContent = document.getElementById('poem-content');
         
-        // Camera stream variable
+        // Camera variables
         let cameraStream = null;
+        let isCameraActive = false;
         
         // Poems database
         const poems = [
-            `In the quiet spaces between thoughts,
-            your name resides — a gentle constant.
-            
-            Not with fireworks or declarations,
-            but with the steady rhythm of a heart
-            that has found its true north.
-            
-            I carry your presence like a secret warmth,
-            a layer beneath skin, deeper than bone.
-            
-            When the world grows loud and frantic,
-            I return to the thought of you — 
-            a still point in turning time.
-            
-            This love does not demand or cling,
-            it simply is, as sunlight is to day.
-            
-            It exists in the mundane and the monumental,
-            in shared silence and understood glances.
-            
-            Wherever you are, whatever you become,
-            my devotion remains — quiet, certain, complete.
-            
-            For in you, I have found not just a love,
-            but a home for my soul's quietest truths.`,
+            `In the silence between our miles,
+your name folds light into my days,
+a quiet dawn that never truly fades.
 
-            `Some loves are whispers, not shouts —
-            and mine for you is the softest sound.
-            
-            It lives in the way I see your shadow
-            in every beautiful thing I encounter.
-            
-            Not a tempest, but a deep river,
-            flowing steadily toward an endless sea.
-            
-            I find you in the morning light,
-            in the pattern of rain on windows,
-            in the space between heartbeats.
-            
-            Time may fold and years may pass,
-            but this affection only deepens its roots.
-            
-            It asks for nothing but your existence,
-            and gives everything without measure.
-            
-            My love is not a cage but an open sky —
-            vast enough for all you are and will be.
-            
-            And if forever exists in any form,
-            it is here, in this quiet devotion to you.`,
+I trace the contours of your absence,
+and find you there, in the soft spaces,
+where longing meets devotion,
+and distance is only geography.
 
-            `There is a map of you in my mind,
-            drawn not with lines but with memories
-            of how light falls across your shoulders.
-            
-            This love is not dramatic or demanding,
-            it is the background music to my days.
-            
-            A steady, gentle hum that reminds me
-            that somewhere, you are breathing,
-            and that alone makes the world right.
-            
-            I do not need to possess you to love you;
-            your freedom is as precious as your presence.
-            
-            My devotion is a patient, quiet thing —
-            it will wait through seasons and silences.
-            
-            For your essence has woven itself
-            into the very fabric of my being.
-            
-            And in this lifetime, or any that may follow,
-            I will recognize your soul — my constant,
-            my calm, my most sincere belonging.`
+Your voice echoes in my quiet hours,
+a gentle tide against the shore of my solitude,
+carving patience into the rock of waiting.
+
+What is time but a river we bridge with memory?
+Each recollection a stone placed with care,
+a path leading back to your smile,
+to the place where I am most myself.
+
+This love is not a fire that consumes,
+but an ember that glows steadily,
+warming the chambers of a heart
+that knows no season but yours.`,
+
+            `There is a hush that follows thought of you,
+a calm that settles like first snow,
+blanketing the noise of ordinary hours.
+
+I imagine your hand in mine,
+not as grasping, but as resting,
+two pieces finding their fit
+in the puzzle of this quiet devotion.
+
+The world turns in monochrome without you,
+shades of gray that long for your color,
+yet even in absence, your presence paints
+subtle hues in the corners of my consciousness.
+
+We are written in a language of glances,
+of unspoken understandings that transcend
+the clumsy syntax of spoken words.
+
+This affection is a deep, still water,
+reflecting a sky that holds no clouds,
+only the constant, gentle light
+of a sun that refuses to set.`,
+
+            `Miles may chart the distance on a map,
+but they cannot measure the space between heartbeats,
+the syncopated rhythm of two souls in tune.
+
+I find you in the quiet corners of my routine,
+in the steam rising from morning tea,
+in the curve of a page turned slowly,
+in the pause between one breath and the next.
+
+This love does not shout its name in crowded rooms,
+but whispers it in empty halls,
+echoing back the truth I already know:
+that some connections are written in the quiet,
+in the soft, inevitable pull of fate.
+
+Your absence is not an emptiness,
+but a fullness of anticipation,
+a vessel waiting to be filled
+with the sound of your return.
+
+And in the waiting, I discover
+that devotion is not a burden carried,
+but a lightness that lifts,
+a gravity that holds me steady
+to the axis of your being.`
         ];
         
-        // Event Listeners
-        openCameraBtn.addEventListener('click', openCamera);
-        backFromCameraBtn.addEventListener('click', goBackToLanding);
-        backFromResultBtn.addEventListener('click', goBackToCamera);
-        captureBtn.addEventListener('click', capturePhoto);
-        
-        // Functions
-        function openCamera() {
-            // Fade out landing page
-            mainContainer.classList.add('fade-out');
+        // Initialize the page
+        function init() {
+            // Add event listeners
+            openCameraBtn.addEventListener('click', openCamera);
+            captureBtn.addEventListener('click', capturePhoto);
             
-            setTimeout(() => {
-                // Hide landing, show camera
-                landingSection.style.display = 'none';
-                cameraSection.style.display = 'flex';
-                
-                // Fade in camera section
-                setTimeout(() => {
-                    mainContainer.classList.remove('fade-out');
-                    mainContainer.classList.add('fade-in');
-                }, 50);
-                
-                // Start camera
-                startCamera();
-            }, 500);
+            // Initially hide sections except landing page
+            cameraSection.style.display = 'none';
+            photoDisplay.style.display = 'none';
+            loveMeter.style.display = 'none';
+            poemSection.style.display = 'none';
         }
         
-        function goBackToLanding() {
-            // Stop camera if active
-            stopCamera();
-            
-            // Fade out camera section
-            mainContainer.classList.add('fade-out');
-            
-            setTimeout(() => {
-                // Hide camera, show landing
-                cameraSection.style.display = 'none';
-                landingSection.style.display = 'flex';
+        // Open camera function
+        async function openCamera() {
+            try {
+                // Fade out landing page
+                landingPage.style.opacity = '0';
                 
-                // Fade in landing section
                 setTimeout(() => {
-                    mainContainer.classList.remove('fade-out');
-                    mainContainer.classList.add('fade-in');
-                }, 50);
-            }, 500);
+                    landingPage.style.display = 'none';
+                    
+                    // Show camera section with fade in
+                    cameraSection.style.display = 'flex';
+                    setTimeout(() => {
+                        cameraSection.style.opacity = '1';
+                        cameraTitle = document.querySelector('.camera-title');
+                        cameraTitle.style.opacity = '1';
+                        cameraTitle.style.transform = 'translateY(0)';
+                    }, 50);
+                    
+                    // Start the camera
+                    startCamera();
+                }, 800);
+                
+            } catch (error) {
+                console.error('Error opening camera:', error);
+                cameraPlaceholder.innerHTML = '<p>Unable to access camera. Please ensure you have granted permissions.</p><p style="margin-top: 16px; font-size: 0.9rem;">Using demo mode instead.</p>';
+            }
         }
         
-        function goBackToCamera() {
-            // Fade out result section
-            mainContainer.classList.add('fade-out');
-            
-            setTimeout(() => {
-                // Hide result, show camera
-                resultSection.style.display = 'none';
-                cameraSection.style.display = 'flex';
-                
-                // Fade in camera section
-                setTimeout(() => {
-                    mainContainer.classList.remove('fade-out');
-                    mainContainer.classList.add('fade-in');
-                }, 50);
-                
-                // Restart camera
-                startCamera();
-            }, 500);
-        }
-        
+        // Start camera function
         async function startCamera() {
             try {
-                // Get camera stream
+                // Check if browser supports mediaDevices
+                if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                    throw new Error('Camera not supported');
+                }
+                
+                // Request camera access
                 cameraStream = await navigator.mediaDevices.getUserMedia({ 
-                    video: { facingMode: 'environment' },
-                    audio: false 
+                    video: { 
+                        facingMode: 'environment',
+                        width: { ideal: 1280 },
+                        height: { ideal: 720 }
+                    } 
                 });
                 
                 // Show camera preview
                 cameraPreview.srcObject = cameraStream;
                 cameraPreview.style.display = 'block';
                 cameraPlaceholder.style.display = 'none';
+                isCameraActive = true;
+                
             } catch (error) {
-                console.error('Error accessing camera:', error);
-                cameraPlaceholder.innerHTML = '<p>Camera unavailable. Using placeholder.</p>';
-                
-                // Simulate camera for demo purposes
-                setTimeout(() => {
-                    cameraPlaceholder.innerHTML = `
-                        <div class="camera-icon">📸</div>
-                        <p>Demo mode active. Click capture to continue.</p>
-                    `;
-                }, 1000);
+                console.error('Error starting camera:', error);
+                // Fallback to placeholder
+                cameraPlaceholder.innerHTML = '<p>Camera access not available.</p><p style="margin-top: 16px; font-size: 0.9rem;">Proceeding with demo mode.</p>';
+                isCameraActive = false;
             }
         }
         
-        function stopCamera() {
-            if (cameraStream) {
-                cameraStream.getTracks().forEach(track => track.stop());
-                cameraStream = null;
-            }
-            cameraPreview.style.display = 'none';
-            cameraPlaceholder.style.display = 'flex';
-        }
-        
+        // Capture photo function
         function capturePhoto() {
-            // Fade out camera section
-            mainContainer.classList.add('fade-out');
-            
+            // Add click effect
+            captureBtn.style.transform = 'scale(0.9)';
             setTimeout(() => {
-                // Hide camera, show result
+                captureBtn.style.transform = 'scale(1)';
+            }, 150);
+            
+            let photoDataUrl;
+            
+            if (isCameraActive && cameraStream) {
+                // Create canvas to capture photo from video
+                const canvas = document.createElement('canvas');
+                canvas.width = cameraPreview.videoWidth;
+                canvas.height = cameraPreview.videoHeight;
+                const context = canvas.getContext('2d');
+                
+                // Draw video frame to canvas
+                context.drawImage(cameraPreview, 0, 0, canvas.width, canvas.height);
+                
+                // Apply monochrome filter
+                const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+                const data = imageData.data;
+                
+                for (let i = 0; i < data.length; i += 4) {
+                    // Convert to grayscale using luminance formula
+                    const avg = data[i] * 0.3 + data[i + 1] * 0.59 + data[i + 2] * 0.11;
+                    data[i] = avg;     // red
+                    data[i + 1] = avg; // green
+                    data[i + 2] = avg; // blue
+                    // Keep alpha channel as is
+                }
+                
+                context.putImageData(imageData, 0, 0);
+                
+                // Get data URL
+                photoDataUrl = canvas.toDataURL('image/jpeg');
+                
+                // Stop camera stream
+                cameraStream.getTracks().forEach(track => track.stop());
+                isCameraActive = false;
+            } else {
+                // Use a placeholder image for demo
+                photoDataUrl = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAwIiBoZWlnaHQ9IjQwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICAgIDxyZWN0IHdpZHRoPSI2MDAiIGhlaWdodD0iNDAwIiBmaWxsPSIjZjBmMGYwIi8+CiAgICA8Y2lyY2xlIGN4PSIzMDAiIGN5PSIyMDAiIHI9IjgwIiBmaWxsPSIjZDBkMGQwIi8+CiAgICA8cmVjdCB4PSIyNDAiIHk9IjE0MCIgd2lkdGg9IjEyMCIgaGVpZ2h0PSI0MCIgZmlsbD0iI2QwZDBkMCIvPgogICAgPGNpcmNsZSBjeD0iMjMwIiBjeT0iMTYwIiByPSIyMCIgZmlsbD0iI2QwZDBkMCIvPgogICAgPGNpcmNsZSBjeD0iMzcwIiBjeT0iMTYwIiByPSIyMCIgZmlsbD0iI2QwZDBkMCIvPgo8L3N2Zz4K';
+            }
+            
+            // Set the captured photo
+            capturedPhoto.src = photoDataUrl;
+            
+            // Hide camera section and show photo display
+            cameraSection.style.opacity = '0';
+            setTimeout(() => {
                 cameraSection.style.display = 'none';
-                resultSection.style.display = 'flex';
                 
-                // Stop camera
-                stopCamera();
-                
-                // Generate a photo (in a real app, this would capture from the video)
-                generatePhoto();
-                
-                // Generate a poem
-                generatePoem();
-                
-                // Fade in result section
+                // Show photo display
+                photoDisplay.style.display = 'block';
                 setTimeout(() => {
-                    mainContainer.classList.remove('fade-out');
-                    mainContainer.classList.add('fade-in');
+                    photoDisplay.style.opacity = '1';
+                    photoDisplay.style.transform = 'translateY(0)';
                 }, 50);
-            }, 500);
+                
+                // After a delay, show love meter
+                setTimeout(showLoveMeter, 1800);
+            }, 800);
         }
         
-        function generatePhoto() {
-            // In a real application, this would capture a frame from the video stream
-            // For this demo, we'll create a gradient placeholder with a monochrome filter
+        // Show love meter function
+        function showLoveMeter() {
+            // Generate random love percentage
+            const loveOptions = [
+                "100%",
+                "127%",
+                "256%",
+                "342%",
+                "418%",
+                "579%",
+                "642%",
+                "731%",
+                "815%",
+                "892%",
+                "967%",
+                "1000%",
+                "∞ Infinite Love",
+                "∞ — Beyond All Measures"
+            ];
             
-            const canvas = document.createElement('canvas');
-            const ctx = canvas.getContext('2d');
+            const randomLove = loveOptions[Math.floor(Math.random() * loveOptions.length)];
             
-            // Set canvas dimensions
-            canvas.width = 600;
-            canvas.height = 400;
+            // Set love percentage with animation
+            lovePercentage.innerHTML = randomLove.includes('∞') 
+                ? `<div class="infinite-love">${randomLove}</div>` 
+                : randomLove;
             
-            // Create a gradient background
-            const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
-            gradient.addColorStop(0, '#f0f0f0');
-            gradient.addColorStop(1, '#d0d0d0');
-            
-            ctx.fillStyle = gradient;
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            
-            // Add some soft circular elements
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
-            ctx.beginPath();
-            ctx.arc(150, 150, 80, 0, Math.PI * 2);
-            ctx.fill();
-            
-            ctx.fillStyle = 'rgba(200, 200, 200, 0.5)';
-            ctx.beginPath();
-            ctx.arc(450, 250, 120, 0, Math.PI * 2);
-            ctx.fill();
-            
-            // Convert to data URL and set as image source
-            capturedPhoto.src = canvas.toDataURL('image/jpeg');
+            // Show love meter
+            loveMeter.style.display = 'block';
+            setTimeout(() => {
+                loveMeter.style.opacity = '1';
+                loveMeter.style.transform = 'translateY(0)';
+                
+                // Animate love percentage
+                setTimeout(() => {
+                    lovePercentage.style.opacity = '1';
+                    lovePercentage.classList.add('pulse');
+                    
+                    // After a delay, show poem
+                    setTimeout(showPoem, 2200);
+                }, 500);
+            }, 50);
         }
         
-        function generatePoem() {
-            // Clear previous poem
-            poemElement.innerHTML = '';
-            
+        // Show poem function
+        function showPoem() {
             // Select a random poem
             const randomPoem = poems[Math.floor(Math.random() * poems.length)];
-            const lines = randomPoem.split('\n\n');
             
-            // Add each line with a staggered animation
+            // Set poem content with line-by-line animation
+            const lines = randomPoem.split('\n');
+            poemContent.innerHTML = '';
+            
             lines.forEach((line, index) => {
                 const lineElement = document.createElement('div');
                 lineElement.className = 'poem-line';
                 lineElement.textContent = line;
-                poemElement.appendChild(lineElement);
+                poemContent.appendChild(lineElement);
                 
-                // Stagger the animation
+                // Animate each line with a delay
                 setTimeout(() => {
-                    lineElement.style.animationDelay = `${index * 0.2}s`;
-                }, 10);
+                    lineElement.style.opacity = '1';
+                    lineElement.style.transform = 'translateY(0)';
+                }, index * 200);
             });
+            
+            // Show poem section
+            poemSection.style.display = 'block';
+            setTimeout(() => {
+                poemSection.style.opacity = '1';
+                poemSection.style.transform = 'translateY(0)';
+                
+                // Scroll to poem section
+                setTimeout(() => {
+                    poemSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                }, 500);
+            }, 50);
         }
         
-        // Initialize with a fade in effect
-        window.addEventListener('load', () => {
-            mainContainer.classList.add('fade-in');
-        });
+        // Initialize the app when page loads
+        window.addEventListener('DOMContentLoaded', init);
     </script>
 </body>
 </html>
