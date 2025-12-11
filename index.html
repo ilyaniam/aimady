@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Love Meter | Monokrom Minimalis</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Reset dan variabel */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --black: #0a0a0a;
+            --dark-gray: #1a1a1a;
+            --gray: #2a2a2a;
+            --light-gray: #eaeaea;
+            --white: #fafafa;
+            --transition: all 0.3s ease;
+        }
+
+        /* Background dengan grain subtle */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--white);
+            color: var(--black);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            padding: 2rem 1rem;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.02'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        /* Container utama */
+        .container {
+            max-width: 900px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 3rem;
+        }
+
+        /* Header */
+        header {
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.5rem;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+            color: var(--black);
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            font-size: 1rem;
+            font-weight: 300;
+            color: var(--gray);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        /* Area kamera */
+        .camera-section {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .camera-container {
+            width: 100%;
+            max-width: 500px;
+            height: 350px;
+            background-color: var(--light-gray);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.05);
+            position: relative;
+        }
+
+        #camera-view {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: none;
+        }
+
+        #photo-preview {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 16px;
+            display: none;
+            animation: fadeIn 0.8s ease;
+        }
+
+        .camera-placeholder {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+            color: var(--gray);
+        }
+
+        .camera-icon {
+            font-size: 4rem;
+            opacity: 0.7;
+        }
+
+        .camera-controls {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        /* Tombol */
+        .btn {
+            padding: 0.9rem 2rem;
+            border-radius: 50px;
+            border: none;
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            letter-spacing: 0.5px;
+        }
+
+        .btn-primary {
+            background-color: var(--black);
+            color: var(--white);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--dark-gray);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-secondary {
+            background-color: transparent;
+            color: var(--black);
+            border: 1px solid var(--gray);
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--light-gray);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Area hasil */
+        .result-section {
+            width: 100%;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            gap: 2.5rem;
+            animation: fadeIn 1s ease;
+        }
+
+        .score-container {
+            text-align: center;
+        }
+
+        .score-label {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 400;
+            color: var(--gray);
+            margin-bottom: 0.5rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        .love-score {
+            font-family: 'Playfair Display', serif;
+            font-size: 5rem;
+            font-weight: 700;
+            color: var(--black);
+            line-height: 1;
+        }
+
+        /* Area puisi */
+        .poem-section {
+            width: 100%;
+            max-width: 600px;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.5rem;
+            animation: fadeIn 1.2s ease;
+        }
+
+        .poem-container {
+            text-align: center;
+            padding: 2rem;
+            background-color: var(--light-gray);
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.03);
+        }
+
+        .poem {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.6rem;
+            font-weight: 500;
+            line-height: 1.6;
+            color: var(--black);
+            font-style: italic;
+        }
+
+        .poem-author {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+            color: var(--gray);
+            margin-top: 1.5rem;
+            font-weight: 300;
+            letter-spacing: 1px;
+        }
+
+        /* Footer */
+        footer {
+            margin-top: 3rem;
+            text-align: center;
+            color: var(--gray);
+            font-weight: 300;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+        }
+
+        /* Animasi */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Responsif */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.8rem;
+            }
+            
+            .love-score {
+                font-size: 4rem;
+            }
+            
+            .poem {
+                font-size: 1.4rem;
+            }
+            
+            .camera-container {
+                height: 300px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .love-score {
+                font-size: 3.2rem;
+            }
+            
+            .poem {
+                font-size: 1.2rem;
+            }
+            
+            .camera-container {
+                height: 250px;
+            }
+            
+            .btn {
+                padding: 0.8rem 1.5rem;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Love Meter</h1>
+            <div class="subtitle">Measure the immeasurable</div>
+        </header>
+        
+        <main>
+            <section class="camera-section">
+                <div class="camera-container">
+                    <video id="camera-view" autoplay></video>
+                    <img id="photo-preview" alt="Foto yang diambil">
+                    
+                    <div class="camera-placeholder" id="camera-placeholder">
+                        <div class="camera-icon">📷</div>
+                        <div>Capture a moment to measure love</div>
+                    </div>
+                </div>
+                
+                <div class="camera-controls">
+                    <button class="btn btn-primary" id="open-camera-btn">Buka Kamera</button>
+                    <button class="btn btn-secondary" id="capture-btn" style="display:none;">Ambil Foto</button>
+                    <button class="btn btn-secondary" id="retake-btn" style="display:none;">Ambil Ulang</button>
+                </div>
+            </section>
+            
+            <section class="result-section" id="result-section">
+                <div class="score-container">
+                    <div class="score-label">Love Score</div>
+                    <div class="love-score" id="love-score">100%</div>
+                </div>
+            </section>
+            
+            <section class="poem-section" id="poem-section">
+                <div class="poem-container">
+                    <div class="poem" id="poem-text">Love is not about how many days, months, or years you have been together. Love is about how much you love each other every single day.</div>
+                    <div class="poem-author" id="poem-author">— Unknown</div>
+                </div>
+            </section>
+        </main>
+    </div>
+    
+    <footer>
+        Made with affection.
+    </footer>
+
+    <script>
+        // Elemen DOM
+        const openCameraBtn = document.getElementById('open-camera-btn');
+        const captureBtn = document.getElementById('capture-btn');
+        const retakeBtn = document.getElementById('retake-btn');
+        const cameraView = document.getElementById('camera-view');
+        const photoPreview = document.getElementById('photo-preview');
+        const cameraPlaceholder = document.getElementById('camera-placeholder');
+        const resultSection = document.getElementById('result-section');
+        const poemSection = document.getElementById('poem-section');
+        const loveScoreElement = document.getElementById('love-score');
+        const poemTextElement = document.getElementById('poem-text');
+        const poemAuthorElement = document.getElementById('poem-author');
+        
+        // Variabel global
+        let stream = null;
+        let isCameraActive = false;
+        
+        // Array puisi romantis
+        const romanticPoems = [
+            {
+                text: "I would wait an eternity, just to spend a moment with you.",
+                author: "Unknown"
+            },
+            {
+                text: "In your light I learn how to love. In your beauty, how to make poems.",
+                author: "Rumi"
+            },
+            {
+                text: "I saw that you were perfect, and so I loved you. Then I saw that you were not perfect and I loved you even more.",
+                author: "Angelita Lim"
+            },
+            {
+                text: "You are the poem I never knew how to write and this life is the story I have always wanted to tell.",
+                author: "Tyler Knott Gregson"
+            },
+            {
+                text: "If I had a flower for every time I thought of you, I could walk in my garden forever.",
+                author: "Alfred Lord Tennyson"
+            },
+            {
+                text: "To love is not to look at one another, but to look together in the same direction.",
+                author: "Antoine de Saint-Exupéry"
+            },
+            {
+                text: "Love is composed of a single soul inhabiting two bodies.",
+                author: "Aristotle"
+            },
+            {
+                text: "The best thing to hold onto in life is each other.",
+                author: "Audrey Hepburn"
+            },
+            {
+                text: "We loved with a love that was more than love.",
+                author: "Edgar Allan Poe"
+            },
+            {
+                text: "I have waited for this opportunity for more than half a century, to repeat to you once again my vow of eternal fidelity and everlasting love.",
+                author: "Gabriel García Márquez"
+            }
+        ];
+        
+        // Fungsi untuk menghasilkan skor cinta acak
+        function generateLoveScore() {
+            // Skor antara 100-100000 atau tak terhingga
+            const scores = [
+                "100%",
+                "520%",
+                "1,000%",
+                "7,777%",
+                "10,000%",
+                "25,000%",
+                "50,000%",
+                "99,999%",
+                "100,000%",
+                "∞ (Tak Terhingga)"
+            ];
+            
+            // Pilih skor acak
+            const randomIndex = Math.floor(Math.random() * scores.length);
+            return scores[randomIndex];
+        }
+        
+        // Fungsi untuk mengambil puisi acak
+        function getRandomPoem() {
+            const randomIndex = Math.floor(Math.random() * romanticPoems.length);
+            return romanticPoems[randomIndex];
+        }
+        
+        // Fungsi untuk membuka kamera
+        async function openCamera() {
+            try {
+                // Mengakses kamera pengguna
+                stream = await navigator.mediaDevices.getUserMedia({ 
+                    video: { facingMode: 'user' },
+                    audio: false 
+                });
+                
+                // Menampilkan video dari kamera
+                cameraView.srcObject = stream;
+                cameraView.style.display = 'block';
+                cameraPlaceholder.style.display = 'none';
+                photoPreview.style.display = 'none';
+                
+                // Mengubah tampilan tombol
+                openCameraBtn.style.display = 'none';
+                captureBtn.style.display = 'block';
+                retakeBtn.style.display = 'none';
+                
+                isCameraActive = true;
+            } catch (error) {
+                console.error('Error mengakses kamera:', error);
+                alert('Tidak dapat mengakses kamera. Pastikan Anda telah memberikan izin.');
+            }
+        }
+        
+        // Fungsi untuk mengambil foto
+        function capturePhoto() {
+            if (!isCameraActive) return;
+            
+            // Membuat canvas untuk menangkap gambar
+            const canvas = document.createElement('canvas');
+            canvas.width = cameraView.videoWidth;
+            canvas.height = cameraView.videoHeight;
+            
+            // Menggambar video ke canvas
+            const context = canvas.getContext('2d');
+            context.drawImage(cameraView, 0, 0, canvas.width, canvas.height);
+            
+            // Mengkonversi canvas ke URL data
+            const photoDataUrl = canvas.toDataURL('image/png');
+            
+            // Menampilkan foto yang diambil
+            photoPreview.src = photoDataUrl;
+            photoPreview.style.display = 'block';
+            cameraView.style.display = 'none';
+            
+            // Mengubah tampilan tombol
+            captureBtn.style.display = 'none';
+            retakeBtn.style.display = 'block';
+            
+            // Menampilkan hasil Love Meter
+            showLoveMeterResults();
+        }
+        
+        // Fungsi untuk mengambil foto ulang
+        function retakePhoto() {
+            // Menampilkan kamera lagi
+            cameraView.style.display = 'block';
+            photoPreview.style.display = 'none';
+            
+            // Mengubah tampilan tombol
+            retakeBtn.style.display = 'none';
+            captureBtn.style.display = 'block';
+            
+            // Menyembunyikan hasil dan puisi
+            resultSection.style.display = 'none';
+            poemSection.style.display = 'none';
+        }
+        
+        // Fungsi untuk menampilkan hasil Love Meter
+        function showLoveMeterResults() {
+            // Menghasilkan skor cinta acak
+            const loveScore = generateLoveScore();
+            loveScoreElement.textContent = loveScore;
+            
+            // Menampilkan bagian hasil
+            resultSection.style.display = 'flex';
+            
+            // Menunggu sebentar sebelum menampilkan puisi
+            setTimeout(() => {
+                // Mengambil puisi acak
+                const randomPoem = getRandomPoem();
+                poemTextElement.textContent = randomPoem.text;
+                poemAuthorElement.textContent = `— ${randomPoem.author}`;
+                
+                // Menampilkan bagian puisi
+                poemSection.style.display = 'flex';
+            }, 800);
+        }
+        
+        // Fungsi untuk menghentikan kamera
+        function stopCamera() {
+            if (stream) {
+                const tracks = stream.getTracks();
+                tracks.forEach(track => track.stop());
+                cameraView.srcObject = null;
+                isCameraActive = false;
+            }
+        }
+        
+        // Event Listeners
+        openCameraBtn.addEventListener('click', openCamera);
+        captureBtn.addEventListener('click', capturePhoto);
+        retakeBtn.addEventListener('click', retakePhoto);
+        
+        // Menghentikan kamera saat halaman ditutup
+        window.addEventListener('beforeunload', () => {
+            stopCamera();
+        });
+        
+        // Inisialisasi: menampilkan placeholder kamera
+        window.addEventListener('DOMContentLoaded', () => {
+            cameraPlaceholder.style.display = 'flex';
+        });
+    </script>
+</body>
+</html>
