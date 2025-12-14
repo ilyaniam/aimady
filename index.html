@@ -194,19 +194,44 @@
             text-align: center;
         }
 
-        /* Photo Display */
-        .photo-section {
+        /* Photo and Love Meter Section */
+        .photo-love-section {
             display: none;
             flex-direction: column;
             align-items: center;
             padding: var(--spacing-xl) var(--spacing-sm);
+            min-height: 100vh;
             opacity: 0;
         }
 
-        .photo-container {
-            max-width: 700px;
+        .photo-love-container {
+            max-width: 1200px;
             width: 100%;
-            margin-bottom: var(--spacing-xl);
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-xl);
+        }
+
+        @media (min-width: 992px) {
+            .photo-love-container {
+                flex-direction: row;
+                align-items: center;
+                justify-content: center;
+                gap: var(--spacing-xl);
+            }
+            
+            .photo-container {
+                flex: 1;
+                max-width: 600px;
+            }
+            
+            .love-meter-container {
+                flex: 1;
+                max-width: 500px;
+            }
+        }
+
+        .photo-container {
             opacity: 0;
             transform: translateY(30px);
         }
@@ -226,13 +251,10 @@
             filter: grayscale(100%) contrast(110%);
         }
 
-        /* Love Meter */
-        .love-meter-section {
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            padding: var(--spacing-xl) var(--spacing-sm);
+        .love-meter-container {
             opacity: 0;
+            transform: translateY(30px);
+            text-align: center;
         }
 
         .love-meter-title {
@@ -240,7 +262,6 @@
             font-size: clamp(2rem, 4vw, 3rem);
             font-weight: 500;
             margin-bottom: var(--spacing-lg);
-            text-align: center;
             opacity: 0;
             transform: translateY(20px);
         }
@@ -249,7 +270,6 @@
             font-family: 'Playfair Display', serif;
             font-size: clamp(3rem, 8vw, 6rem);
             font-weight: 500;
-            text-align: center;
             margin-bottom: var(--spacing-sm);
             opacity: 0;
             transform: translateY(30px);
@@ -259,10 +279,14 @@
             font-family: 'Inter', sans-serif;
             font-size: 1.25rem;
             color: var(--dark-gray);
-            text-align: center;
             max-width: 600px;
+            margin: 0 auto var(--spacing-lg);
             opacity: 0;
             transform: translateY(20px);
+        }
+
+        .continue-btn {
+            margin-top: var(--spacing-md);
         }
 
         /* Poem Section */
@@ -271,6 +295,7 @@
             flex-direction: column;
             align-items: center;
             padding: var(--spacing-xl) var(--spacing-sm);
+            min-height: 100vh;
             opacity: 0;
         }
 
@@ -362,6 +387,10 @@
                 width: 60px;
                 height: 60px;
             }
+            
+            .photo-love-container {
+                gap: var(--spacing-lg);
+            }
         }
 
         @media (max-width: 480px) {
@@ -371,6 +400,10 @@
             
             .poem {
                 font-size: 1rem;
+            }
+            
+            .love-meter-display {
+                font-size: clamp(2.5rem, 6vw, 4rem);
             }
         }
     </style>
@@ -402,30 +435,34 @@
         </div>
     </section>
 
-    <!-- Photo Display -->
-    <section class="photo-section" id="photo-section">
-        <div class="container">
+    <!-- Photo and Love Meter Section -->
+    <section class="photo-love-section" id="photo-love-section">
+        <div class="photo-love-container">
+            <!-- Photo Container -->
             <div class="photo-container">
                 <div class="photo-frame">
                     <img id="captured-photo" src="" alt="Captured moment of love">
                 </div>
             </div>
+            
+            <!-- Love Meter Container -->
+            <div class="love-meter-container">
+                <h2 class="love-meter-title">Love Meter</h2>
+                <div class="love-meter-display" id="love-percentage">Calculating...</div>
+                <p class="love-meter-description" id="love-description">Afi's love for Ilyan</p>
+                <button class="btn continue-btn" id="continue-btn">Continue to Poem</button>
+            </div>
         </div>
-    </section>
-
-    <!-- Love Meter -->
-    <section class="love-meter-section" id="love-meter-section">
-        <h2 class="love-meter-title">Love Meter</h2>
-        <div class="love-meter-display" id="love-percentage">Calculating...</div>
-        <p class="love-meter-description" id="love-description">Afi's love for Ilyan</p>
     </section>
 
     <!-- Poem Section -->
     <section class="poem-section" id="poem-section">
-        <h2 class="poem-title">A Love Poem</h2>
-        <div class="poem-container">
-            <div class="poem" id="poem">
-                <!-- Poem will be generated here -->
+        <div class="container">
+            <h2 class="poem-title">A Love Poem</h2>
+            <div class="poem-container">
+                <div class="poem" id="poem">
+                    <!-- Poem will be generated here -->
+                </div>
             </div>
         </div>
     </section>
@@ -442,8 +479,7 @@
         // DOM Elements
         const landingPage = document.getElementById('landing-page');
         const cameraSection = document.getElementById('camera-section');
-        const photoSection = document.getElementById('photo-section');
-        const loveMeterSection = document.getElementById('love-meter-section');
+        const photoLoveSection = document.getElementById('photo-love-section');
         const poemSection = document.getElementById('poem-section');
         const footer = document.getElementById('footer');
         
@@ -459,6 +495,7 @@
         const cameraControls = document.getElementById('camera-controls');
         const switchCameraBtn = document.getElementById('switch-camera-btn');
         const retryCameraBtn = document.getElementById('retry-camera-btn');
+        const continueBtn = document.getElementById('continue-btn');
 
         // State
         let stream = null;
@@ -471,6 +508,7 @@
         captureBtn.addEventListener('click', capturePhoto);
         switchCameraBtn.addEventListener('click', switchCamera);
         retryCameraBtn.addEventListener('click', retryCamera);
+        continueBtn.addEventListener('click', showPoem);
 
         // Functions
         function openCamera() {
@@ -640,80 +678,92 @@
                 isCameraActive = false;
             }
             
-            // Transition to photo display
+            // Transition to photo and love meter section
             setTimeout(() => {
                 cameraSection.style.opacity = '0';
                 setTimeout(() => {
                     cameraSection.style.display = 'none';
-                    photoSection.style.display = 'flex';
+                    photoLoveSection.style.display = 'flex';
                     setTimeout(() => {
-                        photoSection.classList.add('fade-in');
+                        photoLoveSection.classList.add('fade-in');
                         
                         // Animate photo container
                         const photoContainer = document.querySelector('.photo-container');
                         photoContainer.style.animationDelay = '0.3s';
                         photoContainer.classList.add('fade-in-up');
                         
-                        // Show love meter after delay
-                        setTimeout(showLoveMeter, 2000);
+                        // Calculate and show love meter
+                        setTimeout(() => {
+                            calculateLoveMeter();
+                            
+                            // Animate love meter container
+                            const loveMeterContainer = document.querySelector('.love-meter-container');
+                            loveMeterContainer.style.animationDelay = '0.6s';
+                            loveMeterContainer.classList.add('fade-in-up');
+                            
+                            // Animate love meter title
+                            const loveMeterTitle = document.querySelector('.love-meter-title');
+                            loveMeterTitle.style.animationDelay = '0.9s';
+                            loveMeterTitle.classList.add('fade-in-up');
+                            
+                            // Animate love percentage
+                            setTimeout(() => {
+                                lovePercentage.style.animationDelay = '1.2s';
+                                lovePercentage.classList.add('fade-in-up');
+                                
+                                // Animate description
+                                setTimeout(() => {
+                                    loveDescription.style.animationDelay = '1.5s';
+                                    loveDescription.classList.add('fade-in-up');
+                                    
+                                    // Animate continue button
+                                    setTimeout(() => {
+                                        continueBtn.style.animationDelay = '1.8s';
+                                        continueBtn.classList.add('fade-in-up');
+                                    }, 300);
+                                }, 300);
+                            }, 300);
+                        }, 300);
                     }, 100);
                 }, 800);
             }, 500);
         }
 
-        function showLoveMeter() {
-            // Fade out photo section
-            photoSection.style.opacity = '0';
+        function calculateLoveMeter() {
+            // Generate random love percentage
+            const loveTypes = [
+                { percentage: "100%", description: "Pure and Complete" },
+                { percentage: "250%", description: "Beyond Expectation" },
+                { percentage: "367%", description: "Growing Every Day" },
+                { percentage: "500%", description: "Limitless and True" },
+                { percentage: "742%", description: "Transcending Distance" },
+                { percentage: "842%", description: "Infinite in Dimension" },
+                { percentage: "1000%", description: "Overflowing Beyond Reason" },
+                { percentage: "∞", description: "Beyond All Measures" }
+            ];
+            
+            const randomType = loveTypes[Math.floor(Math.random() * loveTypes.length)];
+            
+            // Update display
+            lovePercentage.textContent = `Love Percentage: ${randomType.percentage}`;
+            loveDescription.textContent = randomType.description;
+            
+            // Add a fun animation effect
+            lovePercentage.style.transition = 'all 0.5s ease';
             setTimeout(() => {
-                photoSection.style.display = 'none';
-                loveMeterSection.style.display = 'flex';
+                lovePercentage.style.transform = 'scale(1.1)';
+                lovePercentage.style.color = '#333';
                 setTimeout(() => {
-                    loveMeterSection.classList.add('fade-in');
-                    
-                    // Animate title
-                    const loveMeterTitle = document.querySelector('.love-meter-title');
-                    loveMeterTitle.style.animationDelay = '0.3s';
-                    loveMeterTitle.classList.add('fade-in-up');
-                    
-                    // Generate random love percentage
-                    const loveTypes = [
-                        { percentage: "100%", description: "Pure and Complete" },
-                        { percentage: "250%", description: "Beyond Expectation" },
-                        { percentage: "367%", description: "Growing Every Day" },
-                        { percentage: "500%", description: "Limitless and True" },
-                        { percentage: "742%", description: "Transcending Distance" },
-                        { percentage: "842%", description: "Infinite in Dimension" },
-                        { percentage: "1000%", description: "Overflowing Beyond Reason" },
-                        { percentage: "∞", description: "Beyond All Measures" }
-                    ];
-                    
-                    const randomType = loveTypes[Math.floor(Math.random() * loveTypes.length)];
-                    
-                    // Animate love percentage display
-                    setTimeout(() => {
-                        lovePercentage.textContent = `Love Percentage: ${randomType.percentage}`;
-                        lovePercentage.style.animationDelay = '0.6s';
-                        lovePercentage.classList.add('fade-in-up');
-                        
-                        // Animate description
-                        setTimeout(() => {
-                            loveDescription.textContent = randomType.description;
-                            loveDescription.style.animationDelay = '0.9s';
-                            loveDescription.classList.add('fade-in-up');
-                            
-                            // Show poem after delay
-                            setTimeout(showPoem, 3000);
-                        }, 600);
-                    }, 300);
-                }, 100);
-            }, 800);
+                    lovePercentage.style.transform = 'scale(1)';
+                }, 300);
+            }, 100);
         }
 
         function showPoem() {
-            // Fade out love meter
-            loveMeterSection.style.opacity = '0';
+            // Fade out photo and love section
+            photoLoveSection.style.opacity = '0';
             setTimeout(() => {
-                loveMeterSection.style.display = 'none';
+                photoLoveSection.style.display = 'none';
                 poemSection.style.display = 'flex';
                 footer.style.display = 'block';
                 
