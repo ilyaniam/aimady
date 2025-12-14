@@ -141,6 +141,7 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
+            transform: scaleX(-1); /* Mirror the camera preview */
         }
 
         .camera-placeholder {
@@ -152,6 +153,8 @@
             height: 100%;
             background: linear-gradient(135deg, var(--light-gray) 0%, var(--gray) 100%);
             color: var(--dark-gray);
+            text-align: center;
+            padding: var(--spacing-md);
         }
 
         .camera-icon {
@@ -177,6 +180,18 @@
         .capture-btn:hover {
             transform: translateX(-50%) scale(1.05);
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .camera-controls {
+            display: flex;
+            gap: var(--spacing-sm);
+            margin-top: var(--spacing-md);
+        }
+
+        .camera-error {
+            color: #ff4444;
+            margin-top: var(--spacing-sm);
+            text-align: center;
         }
 
         /* Photo Display */
@@ -375,11 +390,16 @@
             <div class="camera-placeholder" id="camera-placeholder">
                 <div class="camera-icon">📷</div>
                 <p>Camera will activate when you allow access</p>
+                <p class="camera-error" id="camera-error" style="display: none;"></p>
             </div>
             <video id="camera-preview" autoplay playsinline style="display: none;"></video>
             <button class="capture-btn pulse" id="capture-btn" style="display: none;"></button>
         </div>
         <p class="subtitle">Capture a moment that reflects your love for Ilyan.</p>
+        <div class="camera-controls" id="camera-controls" style="display: none;">
+            <button class="btn" id="switch-camera-btn">Switch Camera</button>
+            <button class="btn" id="retry-camera-btn">Retry Camera</button>
+        </div>
     </section>
 
     <!-- Photo Display -->
@@ -429,20 +449,28 @@
         
         const openCameraBtn = document.getElementById('open-camera-btn');
         const cameraPlaceholder = document.getElementById('camera-placeholder');
+        const cameraError = document.getElementById('camera-error');
         const cameraPreview = document.getElementById('camera-preview');
         const captureBtn = document.getElementById('capture-btn');
         const capturedPhoto = document.getElementById('captured-photo');
         const lovePercentage = document.getElementById('love-percentage');
         const loveDescription = document.getElementById('love-description');
         const poemContainer = document.getElementById('poem');
+        const cameraControls = document.getElementById('camera-controls');
+        const switchCameraBtn = document.getElementById('switch-camera-btn');
+        const retryCameraBtn = document.getElementById('retry-camera-btn');
 
         // State
         let stream = null;
         let capturedImage = null;
+        let currentFacingMode = 'user'; // 'user' for front camera, 'environment' for back camera
+        let isCameraActive = false;
 
         // Event Listeners
         openCameraBtn.addEventListener('click', openCamera);
         captureBtn.addEventListener('click', capturePhoto);
+        switchCameraBtn.addEventListener('click', switchCamera);
+        retryCameraBtn.addEventListener('click', retryCamera);
 
         // Functions
         function openCamera() {
@@ -470,91 +498,147 @@
         }
 
         function initializeCamera() {
-            // For demo purposes, we'll simulate camera activation
-            // In a real implementation, you would use navigator.mediaDevices.getUserMedia
+            cameraPlaceholder.innerHTML = `
+                <div class="camera-icon">📷</div>
+                <p>Initializing camera...</p>
+                <p class="camera-error" id="camera-error" style="display: none;"></p>
+            `;
+            
+            // Request camera access
+            const constraints = {
+                video: {
+                    facingMode: currentFacingMode,
+                    width: { ideal: 1280 },
+                    height: { ideal: 720 }
+                },
+                audio: false
+            };
+
+            navigator.mediaDevices.getUserMedia(constraints)
+                .then(function(mediaStream) {
+                    stream = mediaStream;
+                    cameraPreview.srcObject = stream;
+                    cameraPreview.play();
+                    cameraPlaceholder.style.display = 'none';
+                    cameraPreview.style.display = 'block';
+                    captureBtn.style.display = 'block';
+                    cameraControls.style.display = 'flex';
+                    isCameraActive = true;
+                    
+                    // Update placeholder text
+                    cameraError.textContent = '';
+                    cameraError.style.display = 'none';
+                })
+                .catch(function(err) {
+                    console.error("Camera error: ", err);
+                    isCameraActive = false;
+                    
+                    let errorMessage = "Camera access denied or camera not available.";
+                    
+                    if (err.name === 'NotFoundError' || err.name === 'DevicesNotFoundError') {
+                        errorMessage = "No camera found on this device.";
+                    } else if (err.name === 'NotReadableError' || err.name === 'TrackStartError') {
+                        errorMessage = "Camera is already in use by another application.";
+                    } else if (err.name === 'OverconstrainedError' || err.name === 'ConstraintNotSatisfiedError') {
+                        errorMessage = "Camera doesn't support the requested constraints.";
+                    } else if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
+                        errorMessage = "Camera permission was denied. Please allow camera access in your browser settings.";
+                    } else if (err.name === 'TypeError' || err.name === 'TypeError') {
+                        errorMessage = "Camera access is not supported in this browser.";
+                    }
+                    
+                    cameraPlaceholder.innerHTML = `
+                        <div class="camera-icon">❌</div>
+                        <p>${errorMessage}</p>
+                        <p class="camera-error">Error: ${err.name}</p>
+                    `;
+                    cameraControls.style.display = 'flex';
+                });
+        }
+
+        function switchCamera() {
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+            }
+            
+            // Toggle between front and back camera
+            currentFacingMode = currentFacingMode === 'user' ? 'environment' : 'user';
+            
+            cameraPlaceholder.style.display = 'flex';
+            cameraPlaceholder.innerHTML = `
+                <div class="camera-icon">🔄</div>
+                <p>Switching to ${currentFacingMode === 'user' ? 'front' : 'back'} camera...</p>
+            `;
+            cameraPreview.style.display = 'none';
+            captureBtn.style.display = 'none';
+            
             setTimeout(() => {
-                cameraPlaceholder.style.display = 'none';
-                cameraPreview.style.display = 'block';
-                captureBtn.style.display = 'block';
-                
-                // For demo: show a simulated camera preview
-                cameraPreview.src = "data:image/svg+xml;charset=UTF-8," + encodeURIComponent(`
-                    <svg width="800" height="600" xmlns="http://www.w3.org/2000/svg">
-                        <rect width="100%" height="100%" fill="#f0f0f0"/>
-                        <circle cx="400" cy="300" r="100" fill="#ddd"/>
-                        <text x="400" y="320" font-family="Inter" font-size="24" fill="#888" text-anchor="middle">Afi's view of Ilyan</text>
-                    </svg>
-                `);
-                
-                // In a real implementation:
-                // navigator.mediaDevices.getUserMedia({ video: true })
-                //     .then(function(mediaStream) {
-                //         stream = mediaStream;
-                //         cameraPreview.srcObject = stream;
-                //         cameraPreview.play();
-                //         cameraPlaceholder.style.display = 'none';
-                //         cameraPreview.style.display = 'block';
-                //         captureBtn.style.display = 'block';
-                //     })
-                //     .catch(function(err) {
-                //         console.error("Camera error: ", err);
-                //         cameraPlaceholder.innerHTML = "<p>Camera access denied. Please allow camera access to continue.</p>";
-                //     });
-            }, 1000);
+                initializeCamera();
+            }, 500);
+        }
+
+        function retryCamera() {
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+            }
+            
+            cameraPlaceholder.style.display = 'flex';
+            cameraPlaceholder.innerHTML = `
+                <div class="camera-icon">🔄</div>
+                <p>Retrying camera access...</p>
+            `;
+            cameraPreview.style.display = 'none';
+            captureBtn.style.display = 'none';
+            
+            setTimeout(() => {
+                initializeCamera();
+            }, 500);
         }
 
         function capturePhoto() {
+            if (!isCameraActive) {
+                alert("Camera is not active. Please check camera access.");
+                return;
+            }
+            
             // Stop pulsing animation
             captureBtn.classList.remove('pulse');
             
-            // For demo: create a simulated captured image
+            // Create canvas and capture photo
             const canvas = document.createElement('canvas');
-            canvas.width = 800;
-            canvas.height = 600;
+            canvas.width = cameraPreview.videoWidth;
+            canvas.height = cameraPreview.videoHeight;
             const ctx = canvas.getContext('2d');
             
-            // Create a gradient background
-            const gradient = ctx.createLinearGradient(0, 0, 800, 600);
-            gradient.addColorStop(0, '#f5f5f5');
-            gradient.addColorStop(1, '#e0e0e0');
-            ctx.fillStyle = gradient;
-            ctx.fillRect(0, 0, 800, 600);
-            
-            // Draw a heart shape
-            ctx.fillStyle = '#888';
-            ctx.beginPath();
-            const centerX = 400, centerY = 300, size = 80;
-            for(let i = 0; i < Math.PI * 2; i += 0.01) {
-                const x = 16 * Math.pow(Math.sin(i), 3);
-                const y = -(13 * Math.cos(i) - 5 * Math.cos(2*i) - 2 * Math.cos(3*i) - Math.cos(4*i));
-                ctx.lineTo(centerX + x * size/16, centerY + y * size/16);
+            // Flip the image horizontally if using front camera
+            if (currentFacingMode === 'user') {
+                ctx.translate(canvas.width, 0);
+                ctx.scale(-1, 1);
             }
-            ctx.fill();
             
-            // Add text
-            ctx.fillStyle = '#666';
-            ctx.font = '24px Inter';
-            ctx.textAlign = 'center';
-            ctx.fillText('Afi ❤️ Ilyan', 400, 450);
-            ctx.font = '18px Inter';
-            ctx.fillText('Captured at this moment', 400, 480);
+            ctx.drawImage(cameraPreview, 0, 0, canvas.width, canvas.height);
+            
+            // Apply grayscale filter
+            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            const data = imageData.data;
+            
+            for (let i = 0; i < data.length; i += 4) {
+                const avg = (data[i] + data[i + 1] + data[i + 2]) / 3;
+                data[i] = avg;     // red
+                data[i + 1] = avg; // green
+                data[i + 2] = avg; // blue
+            }
+            
+            ctx.putImageData(imageData, 0, 0);
             
             capturedImage = canvas.toDataURL('image/png');
             capturedPhoto.src = capturedImage;
             
-            // In a real implementation:
-            // const canvas = document.createElement('canvas');
-            // canvas.width = cameraPreview.videoWidth;
-            // canvas.height = cameraPreview.videoHeight;
-            // const ctx = canvas.getContext('2d');
-            // ctx.drawImage(cameraPreview, 0, 0);
-            // capturedImage = canvas.toDataURL('image/png');
-            // capturedPhoto.src = capturedImage;
-            
             // Stop camera stream
-            // if (stream) {
-            //     stream.getTracks().forEach(track => track.stop());
-            // }
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+                isCameraActive = false;
+            }
             
             // Transition to photo display
             setTimeout(() => {
@@ -702,6 +786,13 @@
                 line ? `<div class="poem-line">${line}</div>` : `<div style="height: 1.5rem;"></div>`
             ).join('');
         }
+
+        // Clean up camera stream when leaving page
+        window.addEventListener('beforeunload', function() {
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+            }
+        });
     </script>
 </body>
 </html>
